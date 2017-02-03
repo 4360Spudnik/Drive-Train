@@ -1,0 +1,164 @@
+/*
+  @author T.J. Schlepp, Lord of Sass and Salt
+  @Trainees K.J. [Lastname], R.J. [Lastname], Tyler Pennysomethin
+ */
+package org.usfirst.frc.team4360.robot;
+
+import edu.wpi.first.wpilibj.IterativeRobot;
+
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Timer;
+
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.usfirst.frc.team4360.robot.commands.ExampleCommand;
+import org.usfirst.frc.team4360.robot.subsystems.ExampleSubsystem;
+
+/**
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to each mode, as described in the IterativeRobot
+ * documentation. If you change the name of this class or the package after
+ * creating this project, you must also update the manifest file in the resource
+ * directory.
+ */
+public class Robot extends IterativeRobot {
+
+	public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
+	public static OI oi;
+
+	Command autonomousCommand;
+	SendableChooser<Command> chooser = new SendableChooser<>();
+	
+	//Drive motors:
+	private SpeedController motor0;
+	private SpeedController motor1;
+	private SpeedController motor2;
+	private SpeedController motor3;
+	
+	//Actual controller:
+	private XboxCont stick0;
+	//Because Austin's a pleb:
+	private Joystick stick1;
+	private Joystick stick2;
+	
+	/**
+	 * This function is run when the robot is first started up and should be
+	 * used for any initialization code.
+	 */
+	@Override
+	public void robotInit() {
+		oi = new OI();
+		chooser.addDefault("Default Auto", new ExampleCommand());
+		// chooser.addObject("My Auto", new MyAutoCommand());
+		SmartDashboard.putData("Auto mode", chooser);
+		
+		motor0 = new Talon(0);
+		motor1 = new Talon(1);
+		motor2 = new Talon(2);
+		motor3 = new Talon(3);
+		
+		stick0 = new XboxCont(0);
+		stick1 = new Joystick(1);
+		stick2 = new Joystick(2);
+		
+	}
+
+	/**
+	 * This function is called once each time the robot enters Disabled mode.
+	 * You can use it to reset any subsystem information you want to clear when
+	 * the robot is disabled.
+	 */
+	@Override
+	public void disabledInit() {
+
+	}
+
+	@Override
+	public void disabledPeriodic() {
+		Scheduler.getInstance().run();
+	}
+
+	/**
+	 * This autonomous (along with the chooser code above) shows how to select
+	 * between different autonomous modes using the dashboard. The sendable
+	 * chooser code works with the Java SmartDashboard. If you prefer the
+	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
+	 * getString code to get the auto name from the text box below the Gyro
+	 *
+	 * You can add additional auto modes by adding additional commands to the
+	 * chooser code above (like the commented example) or additional comparisons
+	 * to the switch structure below with additional strings & commands.
+	 */
+	@Override
+	public void autonomousInit() {
+		autonomousCommand = chooser.getSelected();
+
+		/* Example command layout:
+		 * String autoSelected = SmartDashboard.getString("Auto Selector",
+		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
+		 * = new MyAutoCommand(); break; case "Default Auto": default:
+		 * autonomousCommand = new ExampleCommand(); break; }
+		 */
+
+		// schedule the autonomous command (example)
+		if (autonomousCommand != null)
+			autonomousCommand.start();
+	}
+
+	/**
+	 * This function is called periodically during autonomous
+	 */
+	@Override
+	public void autonomousPeriodic() {
+		Scheduler.getInstance().run();
+	}
+
+	@Override
+	public void teleopInit() {
+		// This makes sure that the autonomous stops running when
+		// teleop starts running. If you want the autonomous to
+		// continue until interrupted by another command, remove
+		// this line or comment it out.
+		if (autonomousCommand != null)
+			autonomousCommand.cancel();
+	}
+
+	/**
+	 * This function is called periodically during operator control
+	 */
+	@Override
+	public void teleopPeriodic() {
+		Scheduler.getInstance().run();
+	}
+
+	/**
+	 * This function is called periodically during test mode
+	 */
+	@Override
+	public void testPeriodic() {
+		LiveWindow.run();
+	}
+	
+	public void operatorControl() {
+		while (isOperatorControl() && isEnabled()) { //Checking that autonomous isn't currently a thing
+			// This will set the motors' output power (i.e.: speed).
+			// Give it a number from -1 (100% speed in reverse) to +1 (100% speed going forward)
+			
+			//This will check if Austin is still attached to his joysticks, instead of using the Xbox controller:
+			if(stick2.getY() > 0 || stick1.getY() > 0 || stick2.getY() < 0 || stick1.getY() < 0){ //Literally had rework the entire code so he can have this
+				motor1.set(stick1.getY()*0.5);
+				motor2.set(stick2.getY()*0.5);
+			} else {	//I don't even know if this will work, the joysticks might have to be plugged in for this
+					motor1.set(stick0.getRightJoyY()*0.25);		//We need a Captain Veto system
+					motor2.set(stick0.getRightJoyY()*0.25);
+				}
+			}
+		}
+			//Timer.delay(k_updatePeriod);	// wait 5ms to the next update
+}
+
