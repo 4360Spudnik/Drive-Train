@@ -34,17 +34,20 @@ public class Robot extends IterativeRobot {
 	Command autonomousCommand;
 	SendableChooser<Command> chooser = new SendableChooser<>();
 	
-	//Drive motors:
+	/////Drive motors://///
 	private SpeedController motor0;
 	private SpeedController motor1;
 	private SpeedController motor2;
 	private SpeedController motor3;
 	
-	//Actual controller:
+	/////Actual controller://///
 	private XboxCont stick0;
-	//Because Austin's a pleb:
+	/////Because Austin's a pleb://///
 	private Joystick stick1;
 	private Joystick stick2;
+	
+	/////Extra schtuff://///
+	private Compressor comp1;
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -65,6 +68,18 @@ public class Robot extends IterativeRobot {
 		stick0 = new XboxCont(0);
 		stick1 = new Joystick(1);
 		stick2 = new Joystick(2);
+		
+		comp1 = new Compressor(0);
+		/* Idfk where this is supposed to go...
+		   It's all the thoughts within the thoughts
+			c.setClosedLoopControl(true);
+			c.setClosedLoopControl(false);
+			
+			boolean enabled = c.enabled();
+			boolean pressureSwitch = c.getPressureSwitchValue();
+			float current = c.getCompressorCurrent();
+
+		*/
 		
 	}
 
