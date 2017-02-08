@@ -1,4 +1,4 @@
-/*
+ /*
   @author T.J. Schlepp, Lord of Sass and Salt
   @Trainees K.J. [Lastname], R.J. Colton, Tyler Perlenfein
  */
@@ -47,7 +47,7 @@ public class Robot extends IterativeRobot {
 	private Joystick stick2;
 	
 	/////Extra schtuff://///
-	private Compressor comp1;
+	//private Compressor comp1;
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -60,16 +60,16 @@ public class Robot extends IterativeRobot {
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", chooser);
 		
-		motor0 = new Talon(0);
-		motor1 = new Talon(1);
-		motor2 = new Talon(2);
-		motor3 = new Talon(3);
+		motor0 = new Talon(0);	//Left
+		motor1 = new Talon(1);	//Left
+		motor2 = new Talon(2);	//Right
+		motor3 = new Talon(3);	//Right
 		
 		stick0 = new XboxCont(0);
 		stick1 = new Joystick(1);
 		stick2 = new Joystick(2);
 		
-		comp1 = new Compressor(0);
+		//comp1 = new Compressor(0);
 		/* Idfk where this is supposed to go...
 		   It's all the thoughts within the thoughts
 			c.setClosedLoopControl(true);
@@ -149,6 +149,24 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
+		while (isOperatorControl() && isEnabled()) { //Checking that autonomous isn't currently a thing
+			// This will set the motors' output power (i.e.: speed).
+			// Give it a number from -1 (100% speed in reverse) to +1 (100% speed going forward)
+			
+			//This will check if Austin is still attached to his joysticks, instead of using the Xbox controller:
+			if(stick2.getY() > 0 || stick1.getY() > 0 || stick2.getY() < 0 || stick1.getY() < 0){ //Literally had rework the entire code so he can have this
+				motor0.set(stick1.getY()*-0.5);
+				motor1.set(stick1.getY()*-0.5);
+				motor2.set(stick2.getY()*0.5);
+				motor3.set(stick2.getY()*0.5);
+			} else {	//I don't even know if this will work, the joysticks might have to be plugged in for this
+					motor0.set(stick0.getLeftJoyY()*0.25);
+					motor1.set(stick0.getLeftJoyY()*0.25);		//We need a Captain Veto system
+					motor2.set(stick0.getRightJoyY()*0.25);
+					motor3.set(stick0.getRightJoyY()*0.25);
+					
+				}
+			}
 	}
 
 	/**
@@ -160,20 +178,7 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void operatorControl() {
-		while (isOperatorControl() && isEnabled()) { //Checking that autonomous isn't currently a thing
-			// This will set the motors' output power (i.e.: speed).
-			// Give it a number from -1 (100% speed in reverse) to +1 (100% speed going forward)
-			
-			//This will check if Austin is still attached to his joysticks, instead of using the Xbox controller:
-			if(stick2.getY() > 0 || stick1.getY() > 0 || stick2.getY() < 0 || stick1.getY() < 0){ //Literally had rework the entire code so he can have this
-				motor1.set(stick1.getY()*0.5);
-				motor2.set(stick2.getY()*0.5);
-			} else {	//I don't even know if this will work, the joysticks might have to be plugged in for this
-					motor1.set(stick0.getRightJoyY()*0.25);		//We need a Captain Veto system
-					motor2.set(stick0.getRightJoyY()*0.25);
-				}
-			}
+		
 		}
 			//Timer.delay(k_updatePeriod);	// wait 5ms to the next update
 }
-
