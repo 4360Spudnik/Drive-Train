@@ -1,5 +1,5 @@
  /*
-  @author T.J. Schlepp, Lord of Sass and Salt
+  @author T.J. Schlepp
   @Trainees K.J. [Lastname], R.J. Colton, Tyler Perlenfein
  */
 package org.usfirst.frc.team4360.robot;
@@ -42,12 +42,13 @@ public class Robot extends IterativeRobot {
 	
 	/////Actual controller://///
 	private XboxCont stick0;
-	/////Because Austin's a pleb://///
 	private Joystick stick1;
 	private Joystick stick2;
 	
 	/////Extra schtuff://///
 	//private Compressor comp1;
+	
+	private DoubleSolenoid dubsol1
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -70,15 +71,18 @@ public class Robot extends IterativeRobot {
 		stick2 = new Joystick(2);
 		
 		//comp1 = new Compressor(0);
+		
+		dubsol = new DoubleSolenoid(1, 2)
+		
 		/* Idfk where this is supposed to go...
-		   It's all the thoughts within the thoughts
+		   It's all the thoughts within the thoughts for the pnumatics
 			c.setClosedLoopControl(true);
 			c.setClosedLoopControl(false);
 			
 			boolean enabled = c.enabled();
 			boolean pressureSwitch = c.getPressureSwitchValue();
 			float current = c.getCompressorCurrent();
-
+			
 		*/
 		
 	}
@@ -152,18 +156,26 @@ public class Robot extends IterativeRobot {
 		while (isOperatorControl() && isEnabled()) { //Checking that autonomous isn't currently a thing
 			// This will set the motors' output power (i.e.: speed).
 			// Give it a number from -1 (100% speed in reverse) to +1 (100% speed going forward)
-			
-			//This will check if Austin is still attached to his joysticks, instead of using the Xbox controller:
-			if(stick2.getY() > 0 || stick1.getY() > 0 || stick2.getY() < 0 || stick1.getY() < 0){ //Literally had rework the entire code so he can have this
-				motor0.set(stick1.getY()*-0.5);
-				motor1.set(stick1.getY()*-0.5);
-				motor2.set(stick2.getY()*0.5);
-				motor3.set(stick2.getY()*0.5);
-			} else {	//I don't even know if this will work, the joysticks might have to be plugged in for this
 					motor0.set(stick0.getLeftJoyY()*0.25);
-					motor1.set(stick0.getLeftJoyY()*0.25);		//We need a Captain Veto system
+					motor1.set(stick0.getLeftJoyY()*0.25);
 					motor2.set(stick0.getRightJoyY()*0.25);
 					motor3.set(stick0.getRightJoyY()*0.25);
+					
+					//Other stuff:
+					
+					///Penumatics:///
+					if (stick0.getRightTrig() > 0) {
+						dubsol1.set(DoubleSolenoid.Value.kForward);
+					} else if (stick0.getLeftTrig() > 0) {
+						dubsol1.set(DoubleSolenoid.Value.kReverse);
+					} else {
+						dubsol1.set(DoubleSolenoid.Value.kOff);
+						}
+						
+					/* Notes:
+					 * kOff = none activated
+					 * kForward/kReverse = one activated
+					 */
 					
 				}
 			}
