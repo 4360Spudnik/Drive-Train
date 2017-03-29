@@ -4,6 +4,8 @@
  */
 package org.usfirst.frc.team4360.robot;
 
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 import edu.wpi.first.wpilibj.SpeedController;
@@ -20,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team4360.robot.commands.ExampleCommand;
 import org.usfirst.frc.team4360.robot.subsystems.ExampleSubsystem;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -35,6 +38,7 @@ public class Robot extends IterativeRobot {
 
 	Command autonomousCommand;
 	SendableChooser<Command> chooser = new SendableChooser<>();
+	CameraServer server;
 	
 	/////Drive motors://///
 	private SpeedController motor0;
@@ -76,6 +80,12 @@ public class Robot extends IterativeRobot {
 		
 		motor4 = new Spark(4);
 		motor5 = new Spark(5);
+		
+		//server = CameraServer.getInstance();
+		UsbCamera cam0 = CameraServer.getInstance().startAutomaticCapture(0);
+		cam0.setFPS(20);
+		
+	}
 
 		/* Idfk where this is supposed to go...
 		   It's all the thoughts within the thoughts
@@ -88,7 +98,7 @@ public class Robot extends IterativeRobot {
 
 		*/
 		
-	}
+	
 
 	/**
 	 * This function is called once each time the robot enters Disabled mode.
@@ -140,17 +150,17 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 		
 		for(int i = 1; i <= 4; i++){
-			if (i > 3) {
+			if (i > 2) {
 				motor0.set(0.25);
 				motor1.set(0.25);
 				motor2.set(-0.25);
 				motor3.set(-0.25);
 						}
 			else if(i == 4){
-				motor0.set(0.5);
-				motor1.set(0.5);
-				motor2.set(0.25);
-				motor3.set(0.25);
+				motor0.set(0);
+				motor1.set(0);
+				motor2.set(0);
+				motor3.set(0);
 				}
 		
 			}
@@ -177,10 +187,23 @@ public class Robot extends IterativeRobot {
 			// This will set the motors' output power (i.e.: speed).
 			// Give it a number from -1 (100% speed in reverse) to +1 (100% speed going forward)
 			
-					motor0.set(stick0.getLeftJoyY()*-.5);
-					motor1.set(stick0.getLeftJoyY()*-.5);	
-					motor2.set(stick0.getRightJoyY()*.5);
-					motor3.set(stick0.getRightJoyY()*.5);
+					if (stick0.getLeftBump() == true || stick0.getRightBump() == false) {
+						motor0.set(stick0.getLeftJoyY()*-.25);
+						motor1.set(stick0.getLeftJoyY()*-.25);	
+						motor2.set(stick0.getRightJoyY()*.25);
+						motor3.set(stick0.getRightJoyY()*.25);
+					} else if (stick0.getRightBump() == true || stick0.getLeftBump() == false) {
+						motor0.set(stick0.getLeftJoyY()*-1);
+						motor1.set(stick0.getLeftJoyY()*-1);	
+						motor2.set(stick0.getRightJoyY()*1);
+						motor3.set(stick0.getRightJoyY()*1);
+					} else {
+						motor0.set(stick0.getLeftJoyY()*-.75);
+						motor1.set(stick0.getLeftJoyY()*-.75);	
+						motor2.set(stick0.getRightJoyY()*.75);
+						motor3.set(stick0.getRightJoyY()*.75);
+					}
+					
 					
 					//Other stuff:
 					
@@ -199,15 +222,15 @@ public class Robot extends IterativeRobot {
 					}*/
 					
 					///Climbing:///
-					if (stick0.getLeftTrig() < 0 && stick0.getRightTrig() < 0){
+					
+					if (stick0.getButtonA() == true){
 						motor4.set(1);
 						motor5.set(1);
+					} else {
+						motor4.set(0);
+						motor5.set(0);
 					}
-					else {
-						motor4.set(0.00);
-						motor5.set(0.00);
-					}
-						
+					
 					/* Notes:
 					 * kOff = none activated
 					 * kForward/kReverse = one activated
