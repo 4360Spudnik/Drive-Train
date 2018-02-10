@@ -1,0 +1,75 @@
+package org.usfirst.frc.team4360.robot;
+import edu.wpi.first.wpilibj.Joystick;
+
+/*
+ * @author T.J. Schlepp, Team 4360
+ */
+
+/*
+ * Axis index:
+ * 1 - LeftX
+ * 2 - LeftY
+ * 3 - Triggers (Each trigger { return 0 to 1, axis value { return right - left)
+ * 4 - RightX
+ * 5 - RightY
+ * 6 - DPad Left/Right
+ */
+
+public class Xbox extends Joystick{
+
+	public Xbox(int port) {
+		super(port);
+		// TODO Auto-generated constructor stub
+	}
+	
+	///Buttons///
+	public boolean getButtonA()
+	{
+		return getRawButton(1);
+	}
+	public boolean getButtonB() { 
+		return getRawButton(2);
+		}
+	public boolean getButtonX() { 
+		return getRawButton(3); 
+		}
+	public boolean getButtonY() { 
+		return getRawButton(4); 
+		}
+	public boolean getLeftBump() { 
+		return getRawButton(5); 
+		}
+	public boolean getRightBump() { 
+		return getRawButton(6); 
+		}
+	public boolean getButtonBack() { 
+		return getRawButton(7);
+		}
+	public boolean getButtonStart() { 
+		return getRawButton(8);
+		}
+	public boolean getLeftStickPush() { 
+		return getRawButton(9);
+		}
+	public boolean getRightStickPush() { 
+		return getRawButton(10);
+		}
+	
+	///Axis///
+	public double getLeftJoyX() {
+		return getRawAxis(1);
+		}
+	public double getLeftJoyY() {
+		return getRawAxis(2);
+		}
+	public double getTriggered() {
+		return getRawAxis(3);
+		}
+	public double getRightJoyX() {
+		return getRawAxis(4);
+		}
+	public double getRightJoyY() { 
+		return getRawAxis(5);
+		}
+
+}
